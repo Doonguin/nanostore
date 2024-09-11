@@ -1,5 +1,5 @@
 # Imports
-from modules import games
+from modules.numberGuesser import numberGuesser 
 import os
 
 # Variables
@@ -22,7 +22,7 @@ def titleScreenInput(x):
             inGame = True
 
             # Set the "inGame" flag to false once the game is over
-            inGame = games.numberGuesser()
+            inGame = numberGuesser()
         case "2":
             print("Je koos voor \"galgje\"")
         case "3":
