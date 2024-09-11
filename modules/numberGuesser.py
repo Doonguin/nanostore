@@ -28,20 +28,21 @@ def numberGuesser():
         
         guess = int(guess)
 
-        # Check if the user has guesses left
-        if (guesses == 0):
+        # Handle guesses made by the user
+        if (numberToGuess == guess):
+            guessed = True
+            print(f"Het getal was inderdaad {guess}!")
+            input("Klik op enter om terug te gaan")
+
+            os.system('cls')
+            break
+        elif (guesses <= 0):
             os.system('cls')
             print(f"Helaas! Het getal was {numberToGuess}")
             input("Klik op enter om terug te gaan")
 
             os.system('cls')
             break
-
-        # Handle guesses made by the user
-        if (numberToGuess == guess):
-            guessed = True
-            print(f"Het getal was inderdaad {guess}!")
-            exit()
         elif (numberToGuess > guess):
             os.system('cls')
             print(f"Het getal is hoger dan {guess}")
