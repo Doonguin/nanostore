@@ -54,6 +54,8 @@ class Hangman:
 
     # Start the game
     def startHangman(self):
+        input("Uw naam: ")
+
         self.chooseWord()
         if not self.word:
             print("Fout bij het laden van woordenbestand.")
