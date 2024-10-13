@@ -1,7 +1,7 @@
 # Imports
 import os
-from modules.numberGuesser_OOP import NumberGuesser
-from modules.hangman_OOP import Hangman
+from modules.numberGuesser import NumberGuesser
+from modules.hangman import Hangman
 
 # Define class for the main menu
 class menu():
