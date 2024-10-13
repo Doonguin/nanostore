@@ -39,7 +39,7 @@ class menu():
             case 2:
                 os.system('cls')
                 self.gameHangman()
-            case 2:
+            case 3:
                 os.system('cls')
                 print("CLI Launcher is afgesloten!")
                 return False
