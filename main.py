@@ -2,6 +2,7 @@
 import os
 from modules.numberGuesser import NumberGuesser
 from modules.hangman import Hangman
+from modules.rps import RockPaperScissors
 
 # Define class for the main menu
 class menu():
@@ -10,12 +11,13 @@ class menu():
         self.options = {
             "1": "Nummerraad spel",
             "2": "Galgje",
-            "3": "Verlaat CLI Launcher"
+            "3": "Steen, Papier, Schaar",
+            "4": "Verlaat PromptPlay"
         }
 
     # Function that handles displaying the main menu
     def displayMenu(self):
-        print("Welkom bij CLI Launcher!")
+        print("Welkom bij PromptPlay!")
 
         for num, desc in self.options.items():
             print(f"{num}: {desc}")
@@ -25,10 +27,15 @@ class menu():
         game = NumberGuesser(minNum=1, maxNum=50, maxAtt=5)
         game.startNumberGuesser()
 
-    # handle the hangman game starting when the plater chooses to play hangman
+    # Handle the hangman game starting when the player chooses to play hangman
     def gameHangman(self):
         game = Hangman(wordFile="modules\dict.txt")
         game.startHangman()
+
+    # Handle the Rock Paper Scissors game starting when the player chooses to play Rock Paper Scissors
+    def gameRockPaperScissors(self):
+        game = RockPaperScissors()
+        game.startRPS()
 
     # Handle choices made in the main menu and react accordingly
     def choiceHandler(self, choice):
@@ -41,7 +48,10 @@ class menu():
                 self.gameHangman()
             case 3:
                 os.system('cls')
-                print("CLI Launcher is afgesloten!")
+                self.gameRockPaperScissors()
+            case 4:
+                os.system('cls')
+                print("PromptPlay is afgesloten!")
                 return False
             case _:
                 os.system('cls')
