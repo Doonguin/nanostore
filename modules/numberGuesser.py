@@ -1,55 +1,57 @@
-# Imports
-import os
 import random
+import os
 
-# Number guesser game
-def numberGuesser():
-    # Set "guessed" flag to False
-    guessed = False
+# Define class for number guesser game
+class NumberGuesser:
+    # Initialize class and its variables
+    def __init__(self, minNum = 1, maxNum = 50, maxAtt = 5):
+        self.minNum = minNum
+        self.maxNum = maxNum
+        self.maxAtt = maxAtt
 
-    # Set "guesses left" to the maximum of 4
-    guesses = 4
-
-    # Generate number to guess
-    numberToGuess = random.randint(1, 50)
-
-    print("Dit is nummer rader. Raad een getal tussen 1 en 50.")
-
-    # Check if the user guessed the number or not
-    while guessed == False:
-        guess = input("Raad getal: ")
-
-        # Check if the user input is valid
-        if (guess == ''):
-            while guess == '':
-                os.system('cls')
-                print('Vul eerst een getal in voordat je op enter drukt')
-                guess = input('Raad getal: ')
+        self.guessed = False
+        self.attempts = 0
+        self.numberToGuess = random.randint(self.minNum, self.maxNum)
+    
+    # Define guess function so the player can guess and the program keeps track of guesses
+    def guess(self, guess):
+        self.attempts += 1
         
-        guess = int(guess)
+        if (guess < self.numberToGuess):
+            os.system('cls')
+            return f"Het nummer is hoger dan {guess}"
+        elif (guess > self.numberToGuess):
+            os.system('cls')
+            return f"Het nummer is lager dan {guess}"
+        else:
+            os.system('cls')
+            return f"Gefeliciteerd! Het nummer was inderdaad {guess}"
+    
+    # Check if the player has any guesses left
+    def hasGuesses(self):
+        return self.attempts < self.maxAtt
 
-        # Handle guesses made by the user
-        if (numberToGuess == guess):
-            guessed = True
-            print(f"Het getal was inderdaad {guess}!")
-            input("Klik op enter om terug te gaan")
+    # Define the start function to execute the game
+    def startNumberGuesser(self):
+        print(f"Welkom bij number guesser! Je hebt {self.maxAtt} pogingen om een cijfer tussen de {self.minNum} en {self.maxNum} te raden.")
 
-            os.system('cls')
-            break
-        elif (guesses <= 0):
-            os.system('cls')
-            print(f"Helaas! Het getal was {numberToGuess}")
-            input("Klik op enter om terug te gaan")
+        # As long as the player has guesses left make the game run
+        while self.hasGuesses():
+            try:
+                guess = int(input("raad nummer: "))
+                result = self.guess(guess)
 
-            os.system('cls')
-            break
-        elif (numberToGuess > guess):
-            os.system('cls')
-            print(f"Het getal is hoger dan {guess}")
-            guesses = guesses - 1
-        elif (numberToGuess < guess):
-            os.system('cls')
-            print(f"Het getal is lager dan {guess}")
-            guesses = guesses - 1
-            
-    return False
+                print(result)
+
+                if (result == f"Gefeliciteerd! Het nummer was inderdaad {guess}"):
+                    self.guessed = True
+                    break
+
+            except ValueError:
+                print("Je hebt iets anders dan een nummer ingevuld! Probeer het opnieuw.")
+        
+        if (self.attempts == self.maxAtt and not self.guessed):
+            print(f"Je hebt het nummer helaas niet geraden.... Het nummer was {self.numberToGuess}")
+        
+        input("(Druk op enter om door te gaan)")
+        os.system('cls')

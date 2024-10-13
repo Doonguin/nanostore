@@ -1,55 +1,68 @@
 # Imports
-from modules.numberGuesser import numberGuesser
-from modules.hangman import hangman
 import os
+from modules.numberGuesser_OOP import NumberGuesser
+from modules.hangman_OOP import Hangman
 
-# Variables
-inGame = False
+# Define class for the main menu
+class menu():
+    # Initialize class and its variables
+    def __init__(self):
+        self.options = {
+            "1": "Nummerraad spel",
+            "2": "Galgje",
+            "3": "Verlaat CLI Launcher"
+        }
 
-# Functions
-def genTitleScreen(x, y, z):
-    # Clear console before starting the program
-    os.system('cls')
+    # Function that handles displaying the main menu
+    def displayMenu(self):
+        print("Welkom bij CLI Launcher!")
 
-    # Title ASCII art
-    print(
-        """
-+=========================================================================================================================+
-|                                                                                                                         |
-|   ______     __         __     __         ______     __  __     __   __     ______     __  __     ______     ______     |
-|  /\  ___\   /\ \       /\ \   /\ \       /\  __ \   /\ \/\ \   /\ "-.\ \   /\  ___\   /\ \_\ \   /\  ___\   /\  == \    |
-|  \ \ \____  \ \ \____  \ \ \  \ \ \____  \ \  __ \  \ \ \_\ \  \ \ \-.  \  \ \ \____  \ \  __ \  \ \  __\   \ \  __<    |
-|   \ \_____\  \ \_____\  \ \_\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\\\\"\_\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\ \_\  |
-|    \/_____/   \/_____/   \/_/   \/_____/   \/_/\/_/   \/_____/   \/_/ \/_/   \/_____/   \/_/\/_/   \/_____/   \/_/ /_/  |
-|                                                                                                                         |
-+=========================================================================================================================+
-        """
-    )
+        for num, desc in self.options.items():
+            print(f"{num}: {desc}")
     
-    # Welcome text + input for game selection
-    print("Welkom gebruiker! Selecteer 1 van de 2 ingebouwde games!")
-    return input(f"1: {x}\n2: {y}\n3: {z}\n\nJouw keuze: ")
+    # Handle the numberguesser game starting when the player chooses to play numberguesser
+    def gameNumberGuesser(self):
+        game = NumberGuesser(minNum=1, maxNum=50, maxAtt=5)
+        game.startNumberGuesser()
 
-def titleScreenInput(x):
-    # Check user input
-    match x:
-        case "1":
-            os.system('cls')
-            inGame = True
+    # handle the hangman game starting when the plater chooses to play hangman
+    def gameHangman(self):
+        game = Hangman(wordFile="modules\dict.txt")
+        game.startHangman()
 
-            # Set the "inGame" flag to false once the game is over
-            inGame = numberGuesser()
-        case "2":
-            os.system('cls')
-            inGame = True
+    # Handle choices made in the main menu and react accordingly
+    def choiceHandler(self, choice):
+        match choice:
+            case 1:
+                os.system('cls')
+                self.gameNumberGuesser()
+            case 2:
+                os.system('cls')
+                self.gameHangman()
+            case 2:
+                os.system('cls')
+                print("CLI Launcher is afgesloten!")
+                return False
+            case _:
+                os.system('cls')
+                print("Ongeldige keuze! Probeer opnieuw.")
 
-            # Set the "inGame" flag to false once the game is over 
-            inGame = hangman()
-        case "3":
-            os.system('cls')
-            exit()
+        return True
 
-# Generate title screen and handle the input
-while inGame == False:
-    userInp = genTitleScreen("Nummer raden", "Galgje", "sluit store")
-    titleScreenInput(userInp)
+    # Start the menu and make sure the menu always gets displayed using a while True loop
+    def start(self):
+        os.system('cls')
+
+        while True:
+            try:
+                self.displayMenu()
+                choice = int(input("Maak uw keuze: "))
+                if not self.choiceHandler(choice):
+                    break
+
+            except ValueError:
+                os.system('cls')
+                print("Graag een geldige optie kiezen!")
+
+# Start the menu
+menu().start()

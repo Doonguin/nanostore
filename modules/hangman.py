@@ -1,83 +1,87 @@
-# Imports
 import os
 import random
 
-# Public variables
-def load_words(file_name):
-        with open(file_name, 'r') as file:
-            words = file.read().splitlines()
-        return words
+# Define class for hangman game
+class Hangman:
+    # Initialize class and its variables
+    def __init__(self, wordFile, maxTries=6):
+        self.wordFile = wordFile
+        self.maxTries = maxTries
+        self.word = ""
+        self.guessedLetters = set()
+        self.incorrectGuesses = 0
+        self.triesLeft = maxTries
 
-def choose_word(words):
-    # Select a random word from the words file
-    return random.choice(words)
+    # Load words from the dict.txt file
+    def loadWords(self):
+        with open(self.wordFile, 'r') as file:
+            return file.read().splitlines()
 
-def display_current_progress(word, guessed_letters):
-    # Give the user feedback about the length of the word and whether a letter is in the word or not
-    display = [letter if letter in guessed_letters else '_' for letter in word]
-    print(' '.join(display))
+    # Select a random word from the loaded words
+    def chooseWord(self):
+        words = self.loadWords()
+        if not words:
+            return None
+        self.word = random.choice(words).lower()
 
-def hangman():
-    # Load the words file
-    words = load_words('modules/dict.txt')
-    
-    # Check if the words from the file were loaded correctly, otherwise exit the aplication
-    if not words:
-        return False
+    # Display the current progress of the word (guessed vs unguessed letters)
+    def displayCurrentProgress(self):
+        display = [letter if letter in self.guessedLetters else '_' for letter in self.word]
+        print(' '.join(display))
 
-    # Set the needed variables for the game to work
-    word = choose_word(words).lower()
-    guessed_letters = set()
-    incorrect_guesses = 0
-    max_tries = 6
-    tries_left = max_tries
-
-    print(f"Welcome to Hangman! Het woord heeft {len(word)} letters.")
-    display_current_progress(word, guessed_letters)
-
-    while tries_left > 0:
-        print(f"\nPogingen: {tries_left}")
-        print(f"Geraden letters: {', '.join(sorted(guessed_letters)) if guessed_letters else 'None'}")
-        
-        guess = input("Raad een letter: ").lower()
-        os.system('cls')
-
-        # Check if the guesses character is a letter and not something else
+    # Check if the guessed letter is valid and update guessed letters and tries
+    def checkGuess(self, guess):
         if len(guess) != 1 or not guess.isalpha():
-            os.system('cls')
-            print("Vul alsjeblieft een letter in!")
-            continue
-        
-        # Check if the player has already guessed this letter otherwise add the letter to the guessed letters
-        if guess in guessed_letters:
-            os.system('cls')
-            print("Je hebt deze letter al geraden!")
-            continue
-
-        guessed_letters.add(guess)
-
-        # If the guessed letter is not in the word at take away one try
-        if guess not in word:
-            os.system('cls')
-            print(f"{guess} zit niet in het woord")
-            incorrect_guesses += 1
-            tries_left = max_tries - incorrect_guesses
-
-        # Show the current progress of the word with its guessed and unguessed letters
-        display_current_progress(word, guessed_letters)
-
-        # Check if the user guessed all the letters and end the game if so
-        if all(letter in guessed_letters for letter in word):
-            os.system('cls')
-            print(f"\nJe hebt het woord geraden: {word}!")
-            input("(Druk op enter om door te gaan)")
-
+            print("Vul alsjeblieft een geldige letter in!")
             return False
-            
-    # If the user doesn't have any tries left end the game with a loss
-    else:
-        os.system('cls')
-        print(f"\nJe hebt helaas geen pogingen meer over... Het woord was: {word}")
-        input("(Druk op enter om door te gaan)")
+        
+        if guess in self.guessedLetters:
+            print("Je hebt deze letter al geraden!")
+            return False
 
-        return False
+        self.guessedLetters.add(guess)
+
+        if guess not in self.word:
+            print(f"{guess} zit niet in het woord")
+            self.incorrectGuesses += 1
+            self.triesLeft = self.maxTries - self.incorrectGuesses
+
+        return True
+
+    # Check if the player has guessed the word correctly
+    def hasWon(self):
+        return all(letter in self.guessedLetters for letter in self.word)
+
+    # Start the game
+    def startHangman(self):
+        self.chooseWord()
+        if not self.word:
+            print("Fout bij het laden van woordenbestand.")
+            return
+
+        print(f"Welkom bij Hangman! Het woord heeft {len(self.word)} letters.")
+        self.displayCurrentProgress()
+
+        while self.triesLeft > 0:
+            print(f"\nPogingen: {self.triesLeft}")
+            print(f"Geraden letters: {', '.join(sorted(self.guessedLetters)) if self.guessedLetters else 'None'}")
+            
+            guess = input("Raad een letter: ").lower()
+            os.system('cls')
+
+            if not self.checkGuess(guess):
+                self.displayCurrentProgress()
+                continue
+
+            self.displayCurrentProgress()
+
+            if self.hasWon():
+                print(f"\nJe hebt het woord geraden: {self.word}!")
+                input("(Druk op enter om door te gaan)")
+                os.system('cls')
+                return
+            
+        # If the player doesn't have any guesses left
+        print(f"\nJe hebt geen pogingen meer... Het woord was: {self.word}")
+        input("(Druk op enter om door te gaan)")
+        os.system('cls')
